@@ -1,0 +1,86 @@
+1. /events request to add a recent event - TIMESTAMP MAY NEED ADJUSTING
+curl -vX POST http://localhost:8080/events   -H "Content-Type: application/json"   -d '{
+    "timestamp": "2026-07-02T14:53:12.626",
+    "event_type": "NewDevice",
+    "account": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e",
+    "user": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e"
+  }'
+
+2. /events request to add an older event
+curl -vX POST http://localhost:8080/events   -H "Content-Type: application/json"   -d '{
+    "timestamp": "2026-06-29T14:53:12.626",
+    "event_type": "NewDevice",
+    "account": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e",
+    "user": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e"
+  }'
+
+3. /events request to add a recent event with different event type - TIMESTAMP MAY NEED ADJUSTING
+curl -vX POST http://localhost:8080/events   -H "Content-Type: application/json"   -d '{
+    "timestamp": "2026-07-02T14:53:12.626",
+    "event_type": "SignIn",
+    "account": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e",
+    "user": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e"
+  }'
+
+4. /events request to add a recent event with a different user - TIMESTAMP MAY NEED ADJUSTING
+curl -vX POST http://localhost:8080/events   -H "Content-Type: application/json"   -d '{
+    "timestamp": "2026-07-02T14:53:12.626",
+    "event_type": "SignIn",
+    "account": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e",
+    "user": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179f"
+  }'
+
+5. /events request to add an event for another account - TIMESTAMP MAY NEED ADJUSTING
+curl -vX POST http://localhost:8080/events   -H "Content-Type: application/json"   -d '{
+    "timestamp": "2026-07-02T14:53:12.626",
+    "event_type": "SignIn",
+    "account": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179f",
+    "user": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e"
+  }'
+
+6. /events request that should fail validation (timestamp in the future)
+curl -vX POST http://localhost:8080/events   -H "Content-Type: application/json"   -d '{
+    "timestamp": "2027-06-30T14:53:12.626",
+    "event_type": "SignIn",
+    "account": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e",
+    "user": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e"
+  }'
+
+7. /events request that should fail validation (invalid event type)
+curl -vX POST http://localhost:8080/events   -H "Content-Type: application/json"   -d '{
+    "timestamp": "2026-06-30T14:53:12.626",
+    "event_type": "SomeTypeHere",
+    "account": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e",
+    "user": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e"
+  }'
+
+8. /events request that should fail validation (invalid account uuid version)
+curl -vX POST http://localhost:8080/events   -H "Content-Type: application/json"   -d '{
+    "timestamp": "2026-06-30T14:53:12.626",
+    "event_type": "SignIn",
+    "account": "c8b18d70-b5e3-5c2a-95c2-eadfb6d5179f",
+    "user": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e"
+  }'
+
+9. /events request that should fail validation (invalid user uuid version)
+curl -vX POST http://localhost:8080/events   -H "Content-Type: application/json"   -d '{
+    "timestamp": "2026-06-30T14:53:12.626",
+    "event_type": "SignIn",
+    "account": "c8b18d70-b5e3-4c2a-95c2-eadfb6d5179f",
+    "user": "c8b18d70-b5e3-5c2a-95c2-eadfb6d5179e"
+  }'
+
+10. /metrics request that should return two events
+curl -vX GET http://localhost:8080/metrics?account=c8b18d70-b5e3-4c2a-95c2-eadfb6d5179e
+
+11. /metrics request that should return one event
+curl -vX GET http://localhost:8080/metrics?account=c8b18d70-b5e3-4c2a-95c2-eadfb6d5179f
+
+12. /metrics request for unknown account that should return default metrics
+curl -vX GET http://localhost:8080/metrics?account=c8b18d70-b5e3-4c2a-95c2-eadfb6d5179a
+
+13. /metrics request that should fail (missing account)
+curl -vX GET http://localhost:8080/metrics
+
+14. /metrics request that should fail (invalid account uuid version)
+curl -vX GET http://localhost:8080/metrics?account=c8b18d70-b5e3-5c2a-95c2-eadfb6d5179f
